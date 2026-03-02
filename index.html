@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TimeBok — Booking og betaling for terapeuter og coacher</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #faf9f7;
+      --white: #fff;
+      --dark: #1c1c1e;
+      --accent: #5B4FCF;
+      --accent2: #8B7FE8;
+      --soft: #EDE9FF;
+      --muted: #6b7280;
+      --border: #e8e4f0;
+    }
+    body { background: var(--bg); color: var(--dark); font-family: 'Inter', sans-serif; }
+
+    nav { display: flex; justify-content: space-between; align-items: center; padding: 20px 48px; background: var(--white); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; }
+    .logo { font-size: 1.25rem; font-weight: 800; color: var(--accent); }
+    .logo span { color: var(--accent2); }
+    .nav-links { display: flex; gap: 24px; align-items: center; }
+    .nav-links a { color: var(--muted); text-decoration: none; font-size: 0.9rem; }
+    .nav-cta { background: var(--accent); color: white !important; padding: 10px 22px; border-radius: 8px; font-weight: 700; font-size: 0.85rem; }
+    .nav-cta:hover { background: var(--accent2) !important; }
+
+    /* HERO */
+    .hero { max-width: 1100px; margin: 0 auto; padding: 90px 48px 60px; display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; }
+    .badge { display: inline-flex; align-items: center; gap: 8px; background: var(--soft); color: var(--accent); padding: 6px 14px; border-radius: 999px; font-size: 0.8rem; font-weight: 700; margin-bottom: 24px; }
+    .hero h1 { font-size: 3rem; font-weight: 900; line-height: 1.1; margin-bottom: 20px; }
+    .hero h1 em { font-style: normal; color: var(--accent); }
+    .hero p { color: var(--muted); font-size: 1.05rem; line-height: 1.7; margin-bottom: 36px; }
+    .hero-btns { display: flex; gap: 16px; margin-bottom: 40px; }
+    .btn-main { background: var(--accent); color: white; padding: 14px 28px; border-radius: 10px; font-weight: 700; font-size: 1rem; text-decoration: none; display: inline-block; transition: all 0.2s; }
+    .btn-main:hover { background: var(--accent2); transform: translateY(-2px); box-shadow: 0 8px 32px rgba(91,79,207,0.3); }
+    .btn-ghost { border: 2px solid var(--border); color: var(--dark); padding: 14px 28px; border-radius: 10px; font-weight: 600; font-size: 1rem; text-decoration: none; display: inline-block; transition: all 0.2s; }
+    .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+    .trust-badges { display: flex; gap: 20px; flex-wrap: wrap; }
+    .trust-badge { display: flex; align-items: center; gap: 6px; font-size: 0.82rem; color: var(--muted); }
+    .trust-badge span { font-size: 1rem; }
+
+    /* MOCKUP */
+    .hero-mockup { background: var(--white); border: 1px solid var(--border); border-radius: 24px; padding: 32px; box-shadow: 0 24px 64px rgba(91,79,207,0.12); }
+    .mock-header { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; padding-bottom: 20px; border-bottom: 1px solid var(--border); }
+    .mock-avatar { width: 48px; height: 48px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--accent2)); display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
+    .mock-name { font-weight: 700; font-size: 1rem; }
+    .mock-title { font-size: 0.8rem; color: var(--muted); }
+    .time-slots { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+    .slot { border: 1.5px solid var(--border); border-radius: 8px; padding: 10px; text-align: center; font-size: 0.82rem; font-weight: 600; cursor: pointer; transition: all 0.15s; }
+    .slot.active { background: var(--soft); border-color: var(--accent); color: var(--accent); }
+    .slot:hover { border-color: var(--accent2); }
+    .slot.full { color: var(--muted); background: #f5f5f5; cursor: not-allowed; text-decoration: line-through; }
+    .mock-service { background: var(--soft); border-radius: 12px; padding: 16px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
+    .service-name { font-weight: 700; font-size: 0.95rem; }
+    .service-duration { font-size: 0.8rem; color: var(--muted); margin-top: 2px; }
+    .service-price { font-size: 1.2rem; font-weight: 800; color: var(--accent); }
+    .mock-btn { width: 100%; background: var(--accent); color: white; border: none; padding: 14px; border-radius: 10px; font-size: 1rem; font-weight: 700; cursor: pointer; }
+    .stripe-note { text-align: center; font-size: 0.75rem; color: var(--muted); margin-top: 10px; }
+
+    /* FEATURES */
+    .features { padding: 80px 48px; max-width: 1100px; margin: 0 auto; }
+    .section-tag { color: var(--accent2); font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 12px; }
+    .section-h { font-size: 2.2rem; font-weight: 800; margin-bottom: 48px; }
+    .features-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 24px; }
+    .feature-card { background: var(--white); border: 1px solid var(--border); border-radius: 16px; padding: 28px; transition: all 0.2s; }
+    .feature-card:hover { border-color: var(--accent2); transform: translateY(-3px); }
+    .feature-icon { font-size: 2rem; margin-bottom: 14px; }
+    .feature-card h3 { font-size: 1.05rem; font-weight: 700; margin-bottom: 8px; }
+    .feature-card p { color: var(--muted); font-size: 0.88rem; line-height: 1.6; }
+
+    /* FOR WHOM */
+    .for-whom { background: var(--accent); color: white; padding: 80px 0; }
+    .for-whom-inner { max-width: 1100px; margin: 0 auto; padding: 0 48px; }
+    .for-whom .section-tag { color: rgba(255,255,255,0.6); }
+    .for-whom .section-h { color: white; margin-bottom: 40px; }
+    .whom-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 20px; }
+    .whom-card { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); border-radius: 16px; padding: 24px; text-align: center; }
+    .whom-icon { font-size: 2.5rem; margin-bottom: 12px; }
+    .whom-card h3 { font-size: 0.95rem; font-weight: 700; color: white; margin-bottom: 6px; }
+    .whom-card p { font-size: 0.82rem; color: rgba(255,255,255,0.6); line-height: 1.5; }
+
+    /* PRICING */
+    .pricing { padding: 80px 48px; max-width: 1100px; margin: 0 auto; }
+    .pricing-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 40px; }
+    .p-card { background: var(--white); border: 1.5px solid var(--border); border-radius: 20px; padding: 40px; }
+    .p-card.best { border-color: var(--accent); position: relative; }
+    .p-best-badge { position: absolute; top: -14px; left: 50%; transform: translateX(-50%); background: var(--accent); color: white; font-size: 0.75rem; font-weight: 700; padding: 5px 16px; border-radius: 999px; white-space: nowrap; }
+    .p-tier { font-size: 0.85rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+    .p-price { font-size: 3rem; font-weight: 900; color: var(--accent); margin-bottom: 4px; }
+    .p-price small { font-size: 1rem; color: var(--muted); font-weight: 400; }
+    .p-desc { color: var(--muted); font-size: 0.88rem; margin-bottom: 28px; }
+    .p-features { list-style: none; margin-bottom: 32px; }
+    .p-features li { padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 0.88rem; display: flex; align-items: center; gap: 10px; }
+    .p-features li:last-child { border-bottom: none; }
+    .p-features li::before { content: '✓'; color: var(--accent2); font-weight: 800; }
+    .p-btn { display: block; text-align: center; background: var(--accent); color: white; padding: 14px; border-radius: 10px; font-weight: 700; font-size: 1rem; text-decoration: none; transition: all 0.2s; }
+    .p-btn:hover { background: var(--accent2); }
+    .p-btn.ghost { background: transparent; border: 2px solid var(--border); color: var(--dark); }
+    .p-btn.ghost:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* CTA */
+    .cta { text-align: center; padding: 80px 48px; }
+    .cta-inner { background: linear-gradient(135deg, var(--soft), rgba(139,127,232,0.1)); border: 1px solid rgba(91,79,207,0.2); border-radius: 28px; padding: 80px 48px; max-width: 680px; margin: 0 auto; }
+    .cta-inner h2 { font-size: 2.6rem; font-weight: 900; margin-bottom: 16px; }
+    .cta-inner h2 em { font-style: normal; color: var(--accent); }
+    .cta-inner p { color: var(--muted); font-size: 1rem; margin-bottom: 36px; line-height: 1.7; }
+
+    footer { text-align: center; padding: 36px; color: var(--muted); font-size: 0.85rem; border-top: 1px solid var(--border); background: var(--white); }
+
+    @media (max-width: 900px) {
+      .hero { grid-template-columns: 1fr; padding: 60px 24px; }
+      .hero-mockup { display: none; }
+      .hero h1 { font-size: 2.2rem; }
+      .features-grid, .whom-grid, .pricing-grid { grid-template-columns: 1fr; }
+      nav, .features, .pricing, .cta, .for-whom-inner { padding-left: 24px; padding-right: 24px; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">Time<span>Bok</span></div>
+  <div class="nav-links">
+    <a href="#funksjoner">Funksjoner</a>
+    <a href="#pris">Pris</a>
+    <a href="#pris" class="nav-cta">Prøv gratis</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div>
+    <div class="badge">💜 For terapeuter og coacher</div>
+    <h1>Få betalt <em>automatisk</em> for timene dine</h1>
+    <p>TimeBok er den enkleste måten å ta imot bookinger og betaling online. Ingen mer "Vipps meg" og manuell fakturering. Kunden bestiller, betaler, du møter opp.</p>
+    <div class="hero-btns">
+      <a href="#pris" class="btn-main">Start gratis i dag →</a>
+      <a href="#funksjoner" class="btn-ghost">Se funksjoner</a>
+    </div>
+    <div class="trust-badges">
+      <div class="trust-badge"><span>🔒</span> Stripe-betaling</div>
+      <div class="trust-badge"><span>⚡</span> Oppe på 5 minutter</div>
+      <div class="trust-badge"><span>📱</span> Fungerer på mobil</div>
+      <div class="trust-badge"><span>🇳🇴</span> Norsk</div>
+    </div>
+  </div>
+  <div class="hero-mockup">
+    <div class="mock-header">
+      <div class="mock-avatar">🧘</div>
+      <div>
+        <div class="mock-name">Linn Bergstrøm</div>
+        <div class="mock-title">Psykologspesialist · Oslo</div>
+      </div>
+    </div>
+    <div class="mock-service">
+      <div>
+        <div class="service-name">Individuelle samtaler</div>
+        <div class="service-duration">50 minutter</div>
+      </div>
+      <div class="service-price">kr 1 200</div>
+    </div>
+    <p style="font-size: 0.8rem; color: #6b7280; margin-bottom: 12px; font-weight: 600;">Velg time — Tirsdag 4. mars</p>
+    <div class="time-slots">
+      <div class="slot full">09:00</div>
+      <div class="slot full">10:00</div>
+      <div class="slot active">11:00</div>
+      <div class="slot">13:00</div>
+      <div class="slot">14:00</div>
+      <div class="slot">15:00</div>
+    </div>
+    <button class="mock-btn">🔒 Betal og bekreft — kr 1 200</button>
+    <div class="stripe-note">Trygg betaling med Stripe · Kortbetaling og Vipps</div>
+  </div>
+</div>
+
+<!-- FEATURES -->
+<section class="features" id="funksjoner">
+  <div class="section-tag">Funksjoner</div>
+  <div class="section-h">Alt du trenger. Ingenting du ikke trenger.</div>
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feature-icon">🗓️</div>
+      <h3>Smart kalender</h3>
+      <p>Sett tilgjengeligheten din én gang. Kunder kan bare booke tider som faktisk passer. Ingen dobbelbookinger.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">💳</div>
+      <h3>Automatisk betaling</h3>
+      <p>Stripe håndterer alt. Kunder betaler når de bestiller. Pengene går rett til din konto. Ingen fakturering.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">📩</div>
+      <h3>Påminnelser</h3>
+      <p>Automatiske SMS og e-post til kunden 24 timer og 1 time før timen. Ditt no-show-problem er løst.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🔗</div>
+      <h3>Din egen link</h3>
+      <p>Får du din personlige booking-side: timebok.no/ditt-navn. Del på Instagram, nettsiden eller i e-post.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">📊</div>
+      <h3>Oversikt og statistikk</h3>
+      <p>Se inntekter, kansellerte timer og møtte kunder på ett sted. Enkel eksport til regnskapet ditt.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">↩️</div>
+      <h3>Kanselleringspolitikk</h3>
+      <p>Sett dine egne regler: gratis kansellering innen 24 timer, deretter beholder du gebyret. Du bestemmer.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FOR WHOM -->
+<div class="for-whom">
+  <div class="for-whom-inner">
+    <div class="section-tag">Hvem er dette for?</div>
+    <div class="section-h">Perfekt for solo-utoverære</div>
+    <div class="whom-grid">
+      <div class="whom-card">
+        <div class="whom-icon">🧠</div>
+        <h3>Terapeuter</h3>
+        <p>Psykologer, samtaleterapeuter og kognitiv terapi</p>
+      </div>
+      <div class="whom-card">
+        <div class="whom-icon">🎯</div>
+        <h3>Livscoacher</h3>
+        <p>Business-, karriere- og personlig utvikling-coacher</p>
+      </div>
+      <div class="whom-card">
+        <div class="whom-icon">🧘</div>
+        <h3>Yoga & Wellness</h3>
+        <p>Yoga-lærere, massasører og helseterapeuter</p>
+      </div>
+      <div class="whom-card">
+        <div class="whom-icon">💪</div>
+        <h3>Personal trainere</h3>
+        <p>PT-er som tar kunder både online og fysisk</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PRICING -->
+<div class="pricing" id="pris">
+  <div class="section-tag">Pris</div>
+  <div class="section-h">Start gratis. Voks når du er klar.</div>
+  <div class="pricing-grid">
+    <div class="p-card">
+      <div class="p-tier">Gratis</div>
+      <div class="p-price">kr 0 <small>/ mnd</small></div>
+      <div class="p-desc">For deg som er ny og vil prøve</div>
+      <ul class="p-features">
+        <li>Opp til 10 bookinger/mnd</li>
+        <li>1 tjeneste</li>
+        <li>Stripe-betaling (2.9% + 2 kr)</li>
+        <li>E-postbekreftelse</li>
+        <li>Din personlige link</li>
+      </ul>
+      <a href="#" onclick="alert('Registrering kommer her!')" class="p-btn ghost">Start gratis</a>
+    </div>
+    <div class="p-card best">
+      <div class="p-best-badge">🔥 Mest populær</div>
+      <div class="p-tier">Pro</div>
+      <div class="p-price">kr 249 <small>/ mnd</small></div>
+      <div class="p-desc">For deg med fast kundebase</div>
+      <ul class="p-features">
+        <li>Ubegrensede bookinger</li>
+        <li>Ubegrensede tjenester</li>
+        <li>Stripe-betaling (kun 1.5% + 2 kr)</li>
+        <li>SMS + e-postpåminnelser</li>
+        <li>Kanselleringsbeskyttelse</li>
+        <li>Statistikk og inntektsoversikt</li>
+        <li>Ingen TimeBok-logo</li>
+      </ul>
+      <a href="#" onclick="alert('Stripe checkout kommer her!')" class="p-btn">Start Pro — kr 249/mnd →</a>
+    </div>
+  </div>
+</div>
+
+<!-- CTA -->
+<div class="cta">
+  <div class="cta-inner">
+    <h2>Klar til å slutte med <em>manuell fakturering?</em></h2>
+    <p>Kom i gang på 5 minutter. Ingen kredittkort nødvendig for gratis-planen. Ta imot din første betaling i dag.</p>
+    <a href="#pris" class="btn-main" style="font-size: 1.05rem; padding: 16px 40px;">Start gratis nå →</a>
+  </div>
+</div>
+
+<footer>
+  <p>© 2026 TimeBok · Enkel booking for norske fagfolk · Drevet av Stripe 🔒</p>
+</footer>
+
+</body>
+</html>
